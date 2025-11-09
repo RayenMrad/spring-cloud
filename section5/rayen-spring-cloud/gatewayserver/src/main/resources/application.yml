@@ -1,0 +1,40 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: gatewayserver
+  cloud:
+    config:
+      enabled: false
+    discovery:
+      enabled: true
+    gateway:
+      routes :
+        - id : r1
+          uri : lb://GENRE
+          predicates:
+            - Path=/api/genres/**
+        - id: r2
+          uri: lb://CHANSON
+          predicates:
+            - Path=/api/chansons/**
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true
+  eureka:
+    client:
+    service-url:
+    defaultZone: 'http://localhost:8761/eureka/'
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    gateway:
+      access: unrestricted
+eureka:
+  instance:
+    prefer-ip-address: true
