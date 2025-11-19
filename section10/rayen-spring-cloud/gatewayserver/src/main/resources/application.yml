@@ -1,0 +1,41 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: gatewayserver
+  config:
+    import: "optional:configserver:http://configserver:9999"
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: false
+          routes:
+            - id: genre-ms
+              uri: lb://GENRE-MS
+              predicates:
+                - Path=/api/genres/**
+            - id: chanson-ms
+              uri: lb://CHANSON
+              predicates:
+                - Path=/api/chansons/**
+
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eurekaserver:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

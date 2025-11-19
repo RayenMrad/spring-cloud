@@ -1,0 +1,42 @@
+server:
+  port: 8082
+
+spring:
+  config:
+    import: "optional:configserver:${CONFIG_SERVICE_URL:http://configserver:9999}"
+  application:
+    name: chanson
+  datasource:
+    url: 'jdbc:h2:mem:chansonsdb'
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  cloud:
+    config:
+      enabled: true
+    discovery:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL:http://eurekaserver:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+    initial-instance-info-replication-interval-seconds: 10
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    hostname: chanson
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
