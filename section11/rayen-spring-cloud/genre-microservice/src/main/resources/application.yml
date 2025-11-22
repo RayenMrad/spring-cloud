@@ -1,0 +1,58 @@
+server:
+  port: 8081
+
+spring:
+#  rabbitmq:
+#    host: "localhost"
+#    port: 5672
+#    username: "guest"
+#    password: "guest"
+  profiles:
+    active: "docker,default"
+  config:
+    import: "optional:configserver:${CONFIG_SERVICE_URL:http://localhost:9999}"
+  application:
+#    name: genre
+    name: genre-ms
+  datasource:
+    url: 'jdbc:h2:mem:gendb;DB_CLOSE_ON_EXIT=FALSE'
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  cloud:
+    config:
+      enabled: true
+    discovery:
+      enabled: true
+
+eureka:  # Move this to root level, not under spring
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL:http://localhost:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: false
+    hostname: localhost
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+build:
+  version: 1.0
+
